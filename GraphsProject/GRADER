@@ -1,0 +1,41 @@
+GRADER
+
+
+Documentation of Data Structures
+
+WUGraph
+
+Vertice HashtableChained: Contains a mapping between vertex object and our internal representation of a vertex. We used these to support runtimes of isVertex(), degree()., removeVertex(), addVertex. 
+
+Vertice DList: A Doubly linked list containing DListNodes with our representation of a vertex as the DLIstNodes’ item. This helps ensure correct runtime of getVertices(), addVertex(), and removeVertex(). 
+
+Edges HashTableChained: Contains a mapping between vertexpairs and our internal representation of an edge. This ensures the runtime of addEdge(), removeEdge(), isEdge(), and weight().
+
+VertexClass
+
+DList of Edges: This ensures that getNeighbors() and removeVertex and removeEdge run in correct runtimes.
+
+EdgeClass
+Just a bunch of fields, like weight, the vertices it connects, the shells in the adjaceny lists it contains.
+
+KruskalAlgorithm
+
+WUGraph: Used a new empty WUGraph that gets updated to be the minimum spanning tree.
+
+DoublyLinked Dlist that holds my representation of edges. My representation of edges was an Object array of length three with object1, object2, and weight. 
+
+Queue: Turned the list into a queue that way I could use homework sorting algorithms. 
+
+DisjointSets: Went through the key, and added based of of membership from a DisjointSet that I created.
+
+HashTableChained: Used a hashtable to map my internal representation of an edge to its index in the DisjointSets
+
+*All these were used to support the runtime needed. 
+Design Choices
+	All of our design choices were made to support the necessary runtimes. We wanted vertex’s and edges to have their own classes to store all the information associated with both objects. The Vertex class had a number of getters and setters so WUGraphs methods could run in the correct time. Several hashtables were used so that we could find our internal representations easily. Lists were used to support O(n) methods like get vertices and get neighbors. Kruskal used a bunch of different data structures because it had to work using only the encapsulated methods provided; this allowed it to work with other peoples WUGraphs. We made vertices and Edges have a pointer to the DListNodes that they existed in their respective lists. This made it constant time to remove them from the WuGraph. Edges had a number of getters and setters along with a remove shell class to support removeEdge() and removeVertex.() We broke our project up into three modules: Vertex related methods, Edge related methods, and Kruskal related methods. 
+
+RemoveVertex()
+Here is how we made removeVertex() run in O(d) time. We used a hashtable to find the vertex we wanted to remove. From there, we used the DListofEdges inside that vertex and walked through this list and deleted each edge. Therefore the runtime was equal to the numberofEdges which equals degree d of the vertex. 
+
+getVertices()
+Here is how we made getVertices() run in O(|v|) time. We walked through the WUGraphs Dlist of vertices and added each DListNodes item, which is a vertex, to a new array of vertices. That array is then returned. So the runtime is equal to the length of the DList which is equal to the number of vertices v. 
