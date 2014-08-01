@@ -8,15 +8,16 @@ public class Gameboard{
 	
 	
 	private Square[][] board = new Square[8][8]; 
-	protected int numMoves;
+	protected int numBlack;
+	protected int numWhite;
 	
 	/**
 	 * empty constructor for a gameboard
 	 */
-	public Gameboard(){
-		for(int x = 0; x < 8; x++){
-			for(int y = 0; y < 8; y++){
-				board[x][y] = new Square(x,y);
+	public Gameboard() {
+		for(int x =0; x < 8; x++) {
+			for (int y = 0; y < 8; y++) {
+				board[x][y] = new Square(x, y);
 			}
 		}
 	}
@@ -26,22 +27,28 @@ public class Gameboard{
 	 * @returns a square[][] of this Gameboard's representation
 	 */
 	protected Gameboard copyBoard() {
-		GameBoard copy = new GameBoard();
-		for (int i = 0; x < 8; i++){
+		Gameboard copy = new Gameboard();
+		for (int i = 0; i < 8; i++){
 			for (int j =0; j < 8; j++){
-				clr = this.board[x][y].getColor();
-				if(clr != -1){
-					copy.setSquare(new Square(i,j,clr));
-				}
+				int clr = this.board[i][j].getColor();
+				copy.board[i][j] = (new Square(i,j,clr));
+
 			}
 		}
+		copy.numWhite = numWhite;
+		copy.numBlack = numBlack;
 		return copy;
 	}
+	
+	
+
+
 	
 	/* Sets a square on to the board with given "color" and coordinates given by
 	 * "move. Only use if you're going to remove right after!
 	 */
-	protected void forceMove(Move move,int color){
+	//
+	protected void forceMove1(Move move,int color){
 		int x = move.x1;
 		int y = move.y1;
 		if(move.moveKind == 2){
@@ -52,8 +59,8 @@ public class Gameboard{
 		}
 	}
 	
-	/* forces a move
-	 * 
+	/* forces a move on this gameboard
+	 * no return
 	 */
 	protected void forceRemove(Move move, int color){
 		int x = move.x1;
@@ -69,41 +76,28 @@ public class Gameboard{
 	
 	//Updates "this" Gameboard to include the inputted move
 	//CHECK NUM MOVES
-	protected void setSquare(Move move){
-		int x = move.x1;
-		int y = move.y1;
-		int clr;
-		if (numMoves % 2 == 0) {
-			clr = 1;
-		} else {
-			clr = 0;
-		}
-		if(move.moveKind == 2){ //STEP move
-			Square proxy = getSquare(move);
-			int xc = proxy.getXCoordinate();
-			int yc = proxy.getYCoordinate();
-			board[xc][yc] = new Square(xc, yc);
-			if (!isValidMove(move)) {
-				board[xc][yc] = proxy;
-			} else {
-			board[xc][yc] = proxy;
-			board[move.x2][move.y2] = new Square(move.x2,move.y2);
-			board[x][y] = new Square(x, y, clr);
-			}
-		} else if (!isValidMove(move)) {
+	protected void setSquare(Move move, int clr){
+		if (!isValidMove(move,clr)) {
 			return;
-		} else if (move.moveKind == 1) {//ADD move
-			board[x][y] = new Square(x, y, clr);
-		} else if (move.moveKind == 0) {
-			System.exit(0);
 		}
-		numMoves++;
+		if(move.moveKind == 1){
+			board[move.x1][move.y1].setColor(clr);
+		}
+		else{
+			board[move.x2][move.y2].setColor(-1);
+			board[move.x1][move.y1].setColor(clr);
+			return;
+		}
+		if(clr == 0){
+			numBlack++;
+		}else{
+			numWhite++;
+		}
 	}
 	
 	
 	
-	//Returns the square determined by inputted move
-	
+	//Returns the square determined by this move, used by eval
 	protected Square getSquareEval(Move move) {
 		if (move.moveKind == 2) {
 			int x = move.x1;
@@ -116,6 +110,7 @@ public class Gameboard{
 	}
 	}
 	
+	//Returns the square determined by this move, used by all else
 	protected Square getSquare(Move move){
 		if (move.moveKind == 2) {
 			int x = move.x2;
@@ -133,21 +128,20 @@ public class Gameboard{
   	}
 	
 	//Updates "this" Gameboard to remove whatever piece is at the coordinates of move
-	protected void removeSquare(Move move){
-		int x = move.x1;
-		int y = move.y1;
-		numMoves--;
-		int clr;
-		if (numMoves % 2 == 0) {
-			clr = 1;
-		} else {
-			clr = 0;
+	protected void removeSquare(Move move, int clr){
+		if (!isValidMove(move,clr)) {
+			return;
 		}
 		if(move.moveKind == 2){
-			board[move.x2][move.y2] = new Square(move.x2, move.y2, clr);
-			board[x][y] = new Square(x, y);
+			board[move.x2][move.y2].setColor(clr);
+			board[move.x1][move.y1].setColor(-1);
 		}else{
-			board[x][y] = new Square(x,y);
+			board[move.x1][move.y1].setColor(-1);
+		}
+		if(clr == 0){
+			numBlack--;
+		}else{
+			numWhite--;
 		}
 	}
 	
@@ -155,31 +149,37 @@ public class Gameboard{
 	protected Square[] blackLocation(){
 		Square[] black = new Square[10];
 		int i = 0;
-		for(int x = 0; x < 8; x++){
-			for(int y = 0; y < 8; y++){
-				if (board[x][y].getColor() == 0){
-					black[i] = board[x][y];
-					i++;
+		loop:
+			for(int x = 0; x < 8; x++){
+				for(int y = 0; y < 8; y++){
+					if (board[x][y].getColor() == 0){
+						black[i] = board[x][y];
+						i++;
+						if(i >= 10){
+							break loop;
+						}
+					}
 				}
 			}
-		}
 		return black;
 	}
-	
+
 	//Returns an array off all White squares on the board
 	protected Square[] whiteLocation(){
 		Square[] white = new Square[10];
 		int i = 0;
-		for(int x = 0; x < 8; x++){
-			for(int y = 0; y < 8; y++){
-				if (board[x][y].getColor() == 1){
-					if (i == 10) {
+		loop:
+			for(int x = 0; x < 8; x++){
+				for(int y = 0; y < 8; y++){
+					if (board[x][y].getColor() == 1){
+						white[i] = board[x][y];
+						i++;
+						if(i >= 10){
+							break loop;
+						}
 					}
-					white[i] = board[x][y];
-					i++;
 				}
 			}
-		}
 		return white;
 	}
 	
@@ -329,34 +329,51 @@ public class Gameboard{
   
   	// checks if a move follows the four rules of Network, returns true if it does,
   	// returns false otherwise
-  	protected boolean isValidMove(Move move){
-    	if(move.moveKind == Move.QUIT){
+	private boolean isValidMove(Move move, int color, boolean isStep){
+		if(isStep){
+			Square potentialMove = new Square(move.x1, move.y1);
+	    	potentialMove.setColor(color);
+	    	
+	    	if(potentialMove.getXCoordinate() > 7 || potentialMove.getYCoordinate() > 7 || potentialMove.getXCoordinate() < 0 || potentialMove.getYCoordinate() < 0){
+	    		return false;
+	    	}else if(move.moveKind == 2 && potentialMove.getXCoordinate() == move.x2 && potentialMove.getYCoordinate() == move.y2){
+	    		return false;
+	    	}else if(isCorner(potentialMove)){
+	    		return false;
+	    	}else if(inOppositeGoal(potentialMove)){
+	    		return false;
+	    	}else if(isOccupied(potentialMove)){
+	    		return false;
+	    	}else if(createsConnectedGroup(potentialMove)){
+	    		return false;
+	    	}else{
+	      		return true;
+	    	}
+		}else{
+			return false;
+		}
+	}
+  	protected boolean isValidMove(Move move, int color){
+  		if(move.moveKind == Move.QUIT){
      	 return true;
-    	}else if((move.moveKind == Move.ADD && numMoves >= 20) || (move.moveKind == Move.STEP && numMoves < 20)){
+  		}
+     	 
+    	if(move.moveKind == 2){
+    	    if(move.x1 == move.x2 && move.y1 == move.y2 || numBlack +  numWhite< 20){
+    	        return false;
+    	        }
+    	        Gameboard boardCopy = copyBoard();
+    	        boardCopy.board[move.x2][move.y2].setColor(-1);
+    	        Move testerMove = new Move(move.x1, move.y1);
+    	        return boardCopy.isValidMove(testerMove, color, true);
+    	}
+    	if(move.moveKind == 1 && numBlack + numWhite >= 20){
     		return false;
     	}
-    	if(move.moveKind == 2){
-    		if(move.x1 == move.x2 && move.y1 == move.y2){
-    			return false;
-    		}
-    		Gameboard boardCopy = copyBoard();
-    		boardCopy.board[move.x2][move.y2].setColor(-1);
-    		Move testerMove = new Move(move.x1, move.y1);
-    		if(numMoves%2 == 0){
-    			boardCopy.numMoves = 0;
-    		}else{
-    			boardCopy.numMoves = 1;
-    		}
-    		isValidMove(boardCopy.testerMove);
-    	}
     	Square potentialMove = new Square(move.x1, move.y1);
-    	if(numMoves%2 == 0){
-    		potentialMove.setColor(1);
-    	}
-    	if(numMoves%2 == 1){
-    		potentialMove.setColor(0);
-    	}
-    	if(potentialMove.getXCoordinate() > 7 || potentialMove.getYCoordinate() > 7){
+    	potentialMove.setColor(color);
+    	
+    	if(potentialMove.getXCoordinate() > 7 || potentialMove.getYCoordinate() > 7 || potentialMove.getXCoordinate() < 0 || potentialMove.getYCoordinate() < 0){
     		return false;
     	}else if(move.moveKind == 2 && potentialMove.getXCoordinate() == move.x2 && potentialMove.getYCoordinate() == move.y2){
     		return false;
@@ -435,6 +452,9 @@ public class Gameboard{
     	}
   	}
 
+  	/* returns an array of the surrounding squares
+  	 * 
+  	 */
   protected Square[] getSurroundingSquares(Square square) {
     Square[] surroundings;
     if (isCorner(square)) {
@@ -484,51 +504,47 @@ public class Gameboard{
     
   // generating a list of all valid moves based on the current Gameboard board 
   protected DList allValidMoves(int clr){
-    DList validMoves = new DList();
-    Move test;
-    int i;
-    int j;
-    if(numMoves < 20){
-      for(i = 0; i<8; i++){
-        for(j = 0; j<8; j++){
-         	test = new Move(i,j);
-          	if(isValidMove(test)){
-            	validMoves.insertFront(test);
-         	}
-      	}
-      }
-    }else if(clr == 0){
-    	Square[] blackLocations = blackLocation();
-      	for(int l = 0; l<blackLocations.length; l++){
-      		int x = blackLocations[l].getXCoordinate();
-      		int y = blackLocations[l].getYCoordinate();
-    	  	for(i = 0; i<8; i++){
-    	  		for(j = 0; j<8; j++){
-    	    		if(x!=i && y!=j){
-    	        		if(isValidMove(new Move(i,j,x,y)){
-    	          			validMoves.insertFront(new Move(i,j,x,y));
-    	          		}
-    	          	}
-    	   		}
-    	   	}
-        }
-    }else {
-    	Square[] whiteLocations = whiteLocation(); 	
-      	for(int l = 0; l<whiteLocations.length; l++){
-      		int x = whiteLocations[l].getXCoordinate();
-      		int y = whiteLocations[l].getYCoordinate();
-    	  	for(i = 0; i<8; i++){
-    	  		for(j = 0; j<8; j++){
-    	    		if(x!=i && y!=j){
-    	       			if(isValidMove(new Move(i,j,x,y)){
-    	       				validMoves.insertFront(new Move(i,j,x,y));
-    	          		}
-    	          	}
-    	   		}
-    	   	}
-        }
-    } 
-    return validMoves;
+	  DList validMoves = new DList();
+	  Move test;
+	  int i;
+	  int j;
+	  if(numBlack + numWhite < 20){
+		  for(i = 0; i<8; i++){
+			  for(j = 0; j<8; j++){
+				  test = new Move(i,j);
+				  if(isValidMove(test,clr)){
+					  validMoves.insertFront(test);
+				  }
+			  }
+		  }
+	  }else if(clr == 0){
+		  Square[] blackLocations = blackLocation();
+		  for(int l = 0; l<blackLocations.length; l++){
+			  int x = blackLocations[l].getXCoordinate();
+			  int y = blackLocations[l].getYCoordinate();
+			  for(i = 0; i<8; i++){
+				  for(j = 0; j<8; j++){
+					  if(isValidMove(new Move(i,j,x,y),0)){
+						  validMoves.insertFront(new Move(i,j,x,y));
+					  }
+				  }
+			  }
+		  }
+	  } else {//white step move
+		  Square[] whiteLocations = whiteLocation();
+		  for(int l = 0; l<whiteLocations.length; l++){
+			  int x = whiteLocations[l].getXCoordinate();
+			  int y = whiteLocations[l].getYCoordinate();
+			  for(i = 0; i<8; i++){
+				  for(j = 0; j<8; j++){
+					  if(isValidMove(new Move(i,j,x,y),1)){
+						  validMoves.insertFront(new Move(i,j,x,y));
+					  }
+				  }
+			  }
+		  }
+	  } 
+	  return validMoves;
   }
   
 	
@@ -550,12 +566,17 @@ public class Gameboard{
 	}
 	
 
-	
+	/* returns true if this gameboard has a network
+	 * 
+	 */
 	protected boolean formsNetwork() {
 		boolean result = formsNetwork2(0) || formsNetwork2(1);
 		return result;
 	}
 	
+	/* returns true if this color has a network
+	 * 
+	 */
 	protected boolean formsNetwork2(int color) {
 		Square[] fsquarelist = findFSquares(color);
 		int flength = fsquarelist.length;
@@ -572,12 +593,18 @@ public class Gameboard{
 		return networkiter;
 	}
 	
+	/* helper function for formsNetwork
+	 * 
+	 */
 	protected boolean hasNetwork(Square mainsquare, int color) {
 		int initdepth = 0;
 		DList parentlist = new DList(mainsquare);
 		return recurseNetwork(mainsquare, parentlist, initdepth, color, 20);
 	}
 	
+	/*
+	 * helper function for hasNetwork
+	 */
 	protected boolean recurseNetwork(Square currentsquare, DList plist,int depth, int color, int direction) {
 		boolean endcondition = endSquare(currentsquare) && depth == 5;
 		if (endcondition == true) {
@@ -612,6 +639,9 @@ public class Gameboard{
 		}
 	}
 	
+	/*
+	 * Helper functions for hasNetwork
+	 */
 	protected Square[] removeMatching(Square[] masterarray, DList keylist) {
 		DListNode proxy = keylist.getHead();
 		for (int i = 0; i < keylist.getSize(); i++) {
@@ -650,6 +680,9 @@ public class Gameboard{
 		return farray;
 	}
 	
+	/*
+	 * helper function for network
+	 */
 	protected Square[] strongFormsConnection(Square mainsquare, int direction, int color) {
 		Square[] mainarray = removeStartingSquares(formConnection(mainsquare), color);
 		int arraylength = mainarray.length;
@@ -667,6 +700,9 @@ public class Gameboard{
 		return mainarray;
 	}
 	
+	/*
+	 * Helper function for network
+	 */
 	protected Square[] removeStartingSquares(Square[] sarray, int color) {
 		int slength = sarray.length;
 		for (int i = 0; i < slength; i++) {
@@ -804,6 +840,22 @@ public class Gameboard{
 		}
 	}	
 	
+	protected boolean inEndzone(int color){
+		if(color == 0){
+			for(int x = 1; x < 7; x++){
+				if(board[x][0].getColor() == 0 || board[x][7].getColor() == 0){
+					return true;
+				}
+			}return false;
+		}else if(color == 1){
+			for(int y = 1; y < 7; y++){
+				if(board[0][y].getColor() == 1 || board[7][y].getColor() == 1){
+					return true;
+				}
+			}return false;
+		}return false;
+	}
+	
 	protected void setTest(Square square) {
 		int x = square.getXCoordinate();
 		int y = square.getYCoordinate();
@@ -823,6 +875,17 @@ public class Gameboard{
 		return counter;
 	}
 	
+	protected int getPieces() {
+		int counter = 0;
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (board[i][j].getColor() != -1) {
+					counter++;
+				}
+			}
+		}
+		return counter;
+	}
 }
 	
 	

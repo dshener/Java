@@ -4,23 +4,14 @@ package player;
 public class FNTest {
 	
 	public static void main(String[] args) {
-		Test1();
-		Test2();
-		Test3();
-		Test4();
-		Test5();
-		Test6();
-		Test7();
-		Test8();
-		Test9();
-		Test10();
-		Test11();
-		Test12();
-		Test13();
-		Test14();
+		S5();
+		//Test11();
+		//Test12();
+		//Test13();
+		//Test14();
 		//Test15();
-		Test16();
-		Test17();
+		//Test16();
+		//Test17();
 	}
 	
 	/**
@@ -211,28 +202,142 @@ public class FNTest {
 		System.out.println(board.formsNetwork());
 	}
 	static protected void tPopulate(Gameboard gboard, int x, int y, int color) {
-		Square square = new Square(x, y);
-		square.setColor(color);
-		gboard.setTest(square);
+		gboard.setSquare(new Move(x, y), color);
 	}
 	
+	static protected void Test20() {
+		System.out.println("Starting Test20");
+		MachinePlayer player1 = new MachinePlayer(0, 3);
+		player1.gameBoard.setSquare(new Move(0, 2), 1);//w
+		player1.gameBoard.setSquare(new Move(1, 2), 0);//b
+		player1.gameBoard.setSquare(new Move(1, 1), 1);//w
+		player1.gameBoard.setSquare(new Move(1, 5), 0);//b
+		player1.gameBoard.setSquare(new Move(1, 4), 1);//w
+		player1.gameBoard.setSquare(new Move(2, 1), 0);//b
+		player1.gameBoard.setSquare(new Move(1, 6), 1);//w
+		player1.gameBoard.setSquare(new Move(2, 6), 0);//b
+		player1.gameBoard.setSquare(new Move(3, 1), 1);//w
+		player1.gameBoard.setSquare(new Move(3, 4), 0);//b
+		player1.gameBoard.setSquare(new Move(3, 3), 1);//w
+		player1.gameBoard.setSquare(new Move(4, 0), 0);//b
+		player1.gameBoard.setSquare(new Move(5, 1), 1);//w
+		player1.gameBoard.setSquare(new Move(4, 3), 0);//b
+		player1.gameBoard.setSquare(new Move(4, 4), 1);//w
+		player1.gameBoard.setSquare(new Move(4, 6), 0);//b
+		player1.gameBoard.setSquare(new Move(6, 6), 1);//w
+		player1.gameBoard.setSquare(new Move(5, 6), 0);//b
+		player1.gameBoard.setSquare(new Move(7, 4), 1);//w
+		player1.gameBoard.setSquare(new Move(6, 1), 0);//b
+		player1.gameBoard.setSquare(new Move(2, 5, 1, 4), 1);
+		System.out.println(player1.gameBoard.numPieces());
+		DList ourlist = player1.gameBoard.allValidMoves(0);
+		DListNode head1 = ourlist.getHead();
+		while (head1 != null) {
+			System.out.println(head1.item);
+			head1 = head1.next;
+		}
+	}
+	
+	static protected void E1() {
+		System.out.println("starting E1");
+		MachinePlayer player1 = new MachinePlayer(1, 3);
+		tPopulate(player1.gameBoard, 2, 0, 0); 
+		tPopulate(player1.gameBoard, 2, 1, 1);
+		tPopulate(player1.gameBoard, 4, 1, 1);
+		tPopulate(player1.gameBoard, 7, 1, 1);
+		tPopulate(player1.gameBoard, 2, 2, 0);
+		tPopulate(player1.gameBoard, 1, 3, 0);
+		tPopulate(player1.gameBoard, 5, 3, 1);
+		tPopulate(player1.gameBoard, 0, 4, 1);
+		tPopulate(player1.gameBoard, 4, 4, 1);
+		tPopulate(player1.gameBoard, 3, 5, 0);
+		tPopulate(player1.gameBoard, 1, 7, 0);
+		tPopulate(player1.gameBoard, 4, 2, 0);
+		System.out.println(player1.evaluate(player1.gameBoard, 0 ,1));
+		
+	}
+	
+	static protected void E2() {
+		System.out.println("Starting Test E2");
+		MachinePlayer player1 = new MachinePlayer(1, 3);
+		tPopulate(player1.gameBoard, 3, 0, 0);
+		tPopulate(player1.gameBoard, 0, 1, 1);
+		tPopulate(player1.gameBoard, 5, 1, 0);
+		tPopulate(player1.gameBoard, 6, 1, 0);
+		tPopulate(player1.gameBoard, 2, 3, 1);
+		tPopulate(player1.gameBoard, 4, 3, 1);
+		tPopulate(player1.gameBoard, 1, 5, 0);
+		tPopulate(player1.gameBoard, 4, 5, 1);
+		tPopulate(player1.gameBoard, 5, 5, 0);
+		tPopulate(player1.gameBoard, 6, 5, 1);
+		tPopulate(player1.gameBoard, 7, 4, 1);
+		tPopulate(player1.gameBoard, 4, 7, 0);
+		System.out.println(player1.evaluate(player1.gameBoard, 0, 1));
+		System.out.println(player1.chooseMove());
+	}
+	
+	static protected void S4() {
+		System.out.println("starting E4");
+		MachinePlayer player1 = new MachinePlayer(1, 3);
+		tPopulate(player1.gameBoard, 2, 0, 0); 
+		tPopulate(player1.gameBoard, 2, 1, 1);
+		tPopulate(player1.gameBoard, 4, 1, 1);
+		tPopulate(player1.gameBoard, 2, 2, 0);
+		tPopulate(player1.gameBoard, 1, 3, 0);
+		tPopulate(player1.gameBoard, 5, 3, 1);
+		tPopulate(player1.gameBoard, 0, 4, 1);
+		tPopulate(player1.gameBoard, 4, 4, 1);
+		tPopulate(player1.gameBoard, 3, 5, 0);
+		tPopulate(player1.gameBoard, 1, 7, 0);
+		System.out.println(player1.chooseMove());	
+		
+	}
+
+	
+	static protected void S5() {
+		MachinePlayer player1 = new MachinePlayer(1, 3);
+		tPopulate(player1.gameBoard, 4, 0, 0); 
+		tPopulate(player1.gameBoard, 1, 1, 1);
+		tPopulate(player1.gameBoard, 2, 1, 0);
+		tPopulate(player1.gameBoard, 6, 1, 1);
+		tPopulate(player1.gameBoard, 2, 2, 1);
+		tPopulate(player1.gameBoard, 3, 2, 0);
+		tPopulate(player1.gameBoard, 4, 2, 1);
+		tPopulate(player1.gameBoard, 5, 2, 0);
+		tPopulate(player1.gameBoard, 5, 3, 1);
+		tPopulate(player1.gameBoard, 6, 3, 0);
+		tPopulate(player1.gameBoard, 1, 4, 1);
+		tPopulate(player1.gameBoard, 2, 4, 0);
+		tPopulate(player1.gameBoard, 2, 5, 1);
+		tPopulate(player1.gameBoard, 3, 5, 0);
+		tPopulate(player1.gameBoard, 4, 5, 1);
+		tPopulate(player1.gameBoard, 5, 5, 0);
+		tPopulate(player1.gameBoard, 0, 6, 1);
+		tPopulate(player1.gameBoard, 5, 6, 1);
+		tPopulate(player1.gameBoard, 6, 6, 0);
+		tPopulate(player1.gameBoard, 1, 7, 0); 
+		System.out.println(player1.forceMove(new Move(1, 3)));
+		System.out.println(player1.forceMove(new Move(-3, 6, 1, 4)));
+	}
+	/**
 	static protected void Test11() {
 		System.out.println("Starting Test11");
 		MachinePlayer player1 = new MachinePlayer(1, 3);
-		player1.gameBoard.setSquare(new Move(0, 2));
-		player1.gameBoard.setSquare(new Move(1, 0));
-		player1.gameBoard.setSquare(new Move(2, 2));
-		player1.gameBoard.setSquare(new Move(3, 1));
-		player1.gameBoard.setSquare(new Move(2, 4));
-		player1.gameBoard.setSquare(new Move(2, 5));
-		player1.gameBoard.setSquare(new Move(5, 3));
-		player1.gameBoard.setSquare(new Move(4, 2));
-		player1.gameBoard.setSquare(new Move(4, 4));
-		player1.gameBoard.setSquare(new Move(3, 7));
+		player1.gameBoard.setSquare(new Move(0, 2), 1);
+		player1.gameBoard.setSquare(new Move(1, 0), 0);
+		player1.gameBoard.setSquare(new Move(2, 2), 1);
+		player1.gameBoard.setSquare(new Move(3, 1), 0);
+		player1.gameBoard.setSquare(new Move(2, 4), 1);
+		player1.gameBoard.setSquare(new Move(2, 5), 0);
+		player1.gameBoard.setSquare(new Move(5, 3), 1);
+		player1.gameBoard.setSquare(new Move(4, 2), 0);
+		player1.gameBoard.setSquare(new Move(4, 4), 1);
+		player1.gameBoard.setSquare(new Move(3, 7), 0);
 		Move move1 = new Move(7, 3);
 		System.out.println(player1.evaluate(move1, 1, 0));
 	}
 	
+	/**
 	static protected void Test12() {
 		System.out.println("Starting Test12");
 		MachinePlayer player1 = new MachinePlayer(1, 3);
@@ -249,7 +354,7 @@ public class FNTest {
 		player1.gameBoard.setSquare(new Move(1, 6));//w
 		//player1.gameBoard.forceMove(new Move(4, 5), 1);//w
 		Move move1 = new Move(4, 5);
-		System.out.println(player1.evaluate(move1, 0, 1));
+		//System.out.println(player1.evaluate(move1, 0, 1));
 		//System.out.println(player1.gameBoard.numPieces());
 	}
 	
@@ -257,7 +362,7 @@ public class FNTest {
 		System.out.println("Starting Test13");
 		MachinePlayer player1 = new MachinePlayer(1, 3);
 		Move move1 = new Move(0, 1);
-		System.out.println(player1.evaluate(move1, 1, 0));
+		//System.out.println(player1.evaluate(move1, 1, 0));
 		player1.gameBoard.setSquare(new Move(2, 2));//w
 		player1.gameBoard.setSquare(new Move(1, 0));//b
 		player1.gameBoard.setSquare(new Move(5, 3));//w
@@ -265,11 +370,11 @@ public class FNTest {
 		player1.gameBoard.setSquare(new Move(3, 5));//w
 		player1.gameBoard.setSquare(new Move(1, 7));//b
 		Move move2 = new Move(3, 3);
-		System.out.println(player1.evaluate(move2, 1, 0));
+		//System.out.println(player1.evaluate(move2, 1, 0));
 		
 	}
 	
-	static protected void Test15() {
+	/*static protected void Test15() {
 		System.out.println("Starting Test15");
 		MachinePlayer player1 = new MachinePlayer(0, 3);
 		player1.gameBoard.setSquare(new Move(0, 2));//w
@@ -292,20 +397,55 @@ public class FNTest {
 		player1.gameBoard.setSquare(new Move(5, 6));//b
 		player1.gameBoard.setSquare(new Move(7, 4));//w
 		player1.gameBoard.setSquare(new Move(6, 1));//b
-		System.out.println(player1.gameBoard.formsNetwork());
-		System.out.println(player1.gameBoard.numPieces());
-		System.out.println("NumMoves1:" + player1.gameBoard.numMoves);
-		System.out.println(player1.gameBoard.numPieces());
+		//System.out.println(player1.gameBoard.formsNetwork());
+		//System.out.println(player1.gameBoard.numPieces());
+		//System.out.println("NumMoves1:" + player1.gameBoard.numMoves);
+		//System.out.println(player1.gameBoard.numPieces());
+		//System.out.println(player1.gameBoard.getSquare(1, 4).getColor());
+		//System.out.println(player1.gameBoard.isValidMove(new Move(2, 5, 1, 4)));
 		player1.gameBoard.setSquare(new Move(2, 5, 1, 4));
 		System.out.println(player1.gameBoard.numPieces());
 		System.out.println(player1.gameBoard.numMoves);
-		System.out.println(player1.gameBoard.isValidMove(new Move(5,2,4,3)));
-		System.out.println(player1.evaluate(new Move(5, 2, 4, 3), 0, 1));
-		System.out.println("NumMoves2: " + player1.gameBoard.numMoves);
+		//System.out.println(player1.gameBoard.isValidMove(new Move(5,2,4,3)));
+		//System.out.println(player1.evaluate(new Move(5, 2, 4, 3), 0, 1));
+		//System.out.println("NumMoves2: " + player1.gameBoard.numMoves);
 		Move ourmove = player1.chooseMove();
-		System.out.println(ourmove.x1 + " " + ourmove.y1 + " ");
-		System.out.println(player1.gameBoard.numPieces());
+		//System.out.println(ourmove.x1 + " " + ourmove.y1 + " ");
+		//System.out.println(player1.gameBoard.numPieces());
 		
+	}
+	
+	
+	static protected void Test20() {
+		System.out.println("Starting Test20");
+		MachinePlayer player1 = new MachinePlayer(0, 3);
+		player1.gameBoard.setSquare(new Move(0, 2));//w
+		player1.gameBoard.setSquare(new Move(1, 2));//b
+		player1.gameBoard.setSquare(new Move(1, 1));//w
+		player1.gameBoard.setSquare(new Move(1, 5));//b
+		player1.gameBoard.setSquare(new Move(1, 4));//w
+		player1.gameBoard.setSquare(new Move(2, 1));//b
+		player1.gameBoard.setSquare(new Move(1, 6));//w
+		player1.gameBoard.setSquare(new Move(2, 6));//b
+		player1.gameBoard.setSquare(new Move(3, 1));//w
+		player1.gameBoard.setSquare(new Move(3, 4));//b
+		player1.gameBoard.setSquare(new Move(3, 3));//w
+		player1.gameBoard.setSquare(new Move(4, 0));//b
+		player1.gameBoard.setSquare(new Move(5, 1));//w
+		player1.gameBoard.setSquare(new Move(4, 3));//b
+		player1.gameBoard.setSquare(new Move(4, 4));//w
+		player1.gameBoard.setSquare(new Move(4, 6));//b
+		player1.gameBoard.setSquare(new Move(6, 6));//w
+		player1.gameBoard.setSquare(new Move(5, 6));//b
+		player1.gameBoard.setSquare(new Move(7, 4));//w
+		player1.gameBoard.setSquare(new Move(6, 1));//b
+		player1.gameBoard.setSquare(new Move(2, 5, 1, 4));
+		DList ourlist = player1.gameBoard.allValidMoves(0);
+		DListNode head1 = ourlist.getHead();
+		while (head1 != null) {
+			System.out.println(head1.item);
+			head1 = head1.next;
+		}
 	}
 	
 	static protected void Test14() {
@@ -323,6 +463,7 @@ public class FNTest {
 		player1.gameBoard.setSquare(new Move(4, 7));//b
 		player1.gameBoard.setSquare(new Move(1, 6));//w
 		player1.gameBoard.setSquare(new Move(1, 1));
+		//System.out.println(player1.gameBoard.numPieces());
 		//System.out.println(player1.);
 		Move ourmove = player1.chooseMove();
 		System.out.println(ourmove.x1 + " " + ourmove.y1 + " ");
@@ -341,6 +482,7 @@ public class FNTest {
 	/**
 	 * 
 	 */
+	/**
 	static protected void Test17() {
 		System.out.println("Starting Test17");
 		MachinePlayer player1 = new MachinePlayer(1, 3);
@@ -353,13 +495,13 @@ public class FNTest {
 		player1.gameBoard.setSquare(new Move(7, 5));
 		player1.gameBoard.setSquare(new Move(3, 2));
 		Move move3 = new Move(2, 1);
-		System.out.println(player1.evaluate(move3, 1, 0));
+		//System.out.println(player1.evaluate(move3, 1, 0));
 		
 		
 	}
-		
+		*/
 	
 	
-	
+	}
 
-}
+
